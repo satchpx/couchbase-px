@@ -9,20 +9,112 @@
 ## Install Portworx
 
 ### Pre-requisites
+```
+https://docs.portworx.com/start-here-installation/
+```
 
 ### Install Portworx
+```
+https://docs.portworx.com/portworx-install-with-kubernetes/
+```
 
 ### Create the SchedulePolicy
+The schedulePolicy is a CRD where a policy can be defined for backing up Portworx Volumes. These could either be [local snapshots](https://docs.portworx.com/portworx-install-with-kubernetes/storage-operations/create-snapshots/on-demand/snaps-local/) or [cloudsnaps](https://docs.portworx.com/portworx-install-with-kubernetes/storage-operations/create-snapshots/on-demand/snaps-cloud/).
+
+We shall reference this schedulePolicy in the storageClass, so that the pvc's created will be automatically backed up. This enables Business Continuity, Disaster Recovery.
+
+The key parameters in the Schedule Policy need to be driven by the Organization's RPO/RTO requirements.
+
+The Schedule Policy defined below, has an RPO of <> and RTO of <>.
+Apply the Schedule policy below:
+```
+apiVersion: stork.libopenstorage.org/v1alpha1
+kind: SchedulePolicy
+metadata:
+  name: cbc-policy
+policy:
+  interval:
+    intervalMinutes: 10
+    retain: 4
+  daily:
+    time: "10:14PM"
+    retain: 3
+  weekly:
+    day: "Thursday"
+    time: "10:13PM"
+    retain: 2
+  monthly:
+    date: 14
+    time: "8:05PM"
+    retain: 1
+```
 
 ### Create the BackupLocation
+Backup Location is another CRD that allows a user to define the S3 compliant object store where Portworx Volume backups shall be stored.
+
+```
+apiVersion: stork.libopenstorage.org/v1alpha1
+kind: BackupLocation
+metadata:
+  name: pwx-s3-backuplocation
+  namespace: kube-system
+  annotations:
+    stork.libopenstorage.org/skipresource: "true"
+location:
+  type: s3
+  path: "pwx-volume-backups"
+  s3Config:
+    region: us-east-1
+    accessKeyID: <redacted>
+    secretAccessKey: <redacted>
+    endpoint: "70.0.0.141:9010"
+    disableSSL: true
+```
 
 ### Install the required storageClasses
+Create a storageClass that incorporates the two objects defined above. This will ensure that all PVC's created from this storageClass will be backed up per the defined schedule to the defined location.
+
+This will ensure Business Continuity and Disaster Recovery capabilities to our couchbase cluster and its data.
+
+CouchDB shards its data across the cluster. Taking this into consideration, we shall define a storage replication factor of "2". We shall also set its `io_profile` to `db` so that the volume performance is optimized to database like workloads. For more information on Portworx io_profiles, refer [here](https://docs.portworx.com/install-with-other/operate-and-maintain/performance-and-tuning/tuning/#volume-granular-performance-tuning)
+
+Create the storageClass defined below:
+```
+kind: StorageClass
+apiVersion: storage.k8s.io/v1beta1
+metadata:
+ name: px-db-rf2-sc
+provisioner: kubernetes.io/portworx-volume
+allowVolumeExpansion: true
+parameters:
+ repl: "2"
+ priority_io: "high"
+ io_profile: "db"
+ disable_io_profile_protection: "1"
+ snapshotschedule.stork.libopenstorage.org/interval-schedule: |
+   schedulePolicyName: cbc-policy
+ snapshotschedule.stork.libopenstorage.org/daily-schedule: |
+   schedulePolicyName: cbc-policy
+ snapshotschedule.stork.libopenstorage.org/weekly-schedule: |
+   schedulePolicyName: cbc-policy
+ snapshotschedule.stork.libopenstorage.org/monthly-schedule: |
+   schedulePolicyName: cbc-policy
+   annotations:
+     portworx/snapshot-type: cloud
+     portworx/cloud-cred-id: k8s/kube-system/pwx-s3-backuplocation
+```
 
 ## Install Couchbase using the operator
 
 ### Download the operator
 ```
 https://packages.couchbase.com/kubernetes/1.2.1/couchbase-autonomous-operator-openshift_1.2.1-linux-x86_64.tar.gz
+```
+
+Once the above package is downloaded:
+```
+tar -xzvf couchbase-autonomous-operator-openshift_1.2.1-linux-x86_64.tar.gz
+
 ```
 
 ### Install the couchbase operator
