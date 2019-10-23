@@ -93,12 +93,6 @@ parameters:
  disable_io_profile_protection: "1"
  snapshotschedule.stork.libopenstorage.org/interval-schedule: |
    schedulePolicyName: cbc-policy
- snapshotschedule.stork.libopenstorage.org/daily-schedule: |
-   schedulePolicyName: cbc-policy
- snapshotschedule.stork.libopenstorage.org/weekly-schedule: |
-   schedulePolicyName: cbc-policy
- snapshotschedule.stork.libopenstorage.org/monthly-schedule: |
-   schedulePolicyName: cbc-policy
    annotations:
      portworx/snapshot-type: cloud
      portworx/cloud-cred-id: k8s/kube-system/pwx-s3-backuplocation
