@@ -108,7 +108,24 @@ https://packages.couchbase.com/kubernetes/1.2.1/couchbase-autonomous-operator-op
 Once the above package is downloaded:
 ```
 tar -xzvf couchbase-autonomous-operator-openshift_1.2.1-linux-x86_64.tar.gz
-
+cd couchbase-autonomous-operator-kubernetes_1.2.1-linux-x86_64/
+kubectl create -f crd.yaml
+kubectl create -f operator-service-account.yaml
+kubectl create -f operator-role.yaml
+kubectl create -f operator-role-binding.yaml
+kubectl create -f operator-deployment.yaml
 ```
+
+Verify that the operator is running
+```
+kubectl get pods
+NAME                                  READY   STATUS    RESTARTS   AGE
+couchbase-operator-577fbfdbcd-6sgz9   1/1     Running   0          66s
+```
+
+Now we can deploy the couchbase persistent cluster
+```
+```
+
 
 ### Install the couchbase operator
