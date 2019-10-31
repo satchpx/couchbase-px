@@ -71,6 +71,9 @@ location:
     disableSSL: true
 ```
 
+### Create a VolumePlacementStrategy
+@TODO
+
 ### Install the required storageClasses
 Create a storageClass that incorporates the two objects defined above. This will ensure that all PVC's created from this storageClass will be backed up per the defined schedule to the defined location.
 
@@ -121,6 +124,11 @@ Verify that the operator is running
 kubectl get pods
 NAME                                  READY   STATUS    RESTARTS   AGE
 couchbase-operator-577fbfdbcd-6sgz9   1/1     Running   0          66s
+```
+
+Create a secret containing the Auth Credentials
+```
+kubectl create -f secret.yaml
 ```
 
 Now we can deploy the couchbase persistent cluster
