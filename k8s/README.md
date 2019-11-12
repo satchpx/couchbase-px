@@ -1,8 +1,8 @@
-# Couchbase backed  by Portworx on Openshift
+# Couchbase backed  by Portworx on Kubernetes
 
 ## Pre-requisites
 ```
-1. A working Openshift cluster
+1. A working Kubernetes cluster
 2. Storage for Portworx
 ```
 
@@ -105,13 +105,40 @@ parameters:
 
 ### Download the operator
 ```
-https://packages.couchbase.com/kubernetes/1.2.1/couchbase-autonomous-operator-openshift_1.2.1-linux-x86_64.tar.gz
+https://packages.couchbase.com/kubernetes/1.2.1/couchbase-autonomous-operator-kubernetes_1.2.1-linux-x86_64.tar.gz
 ```
 
 Once the above package is downloaded:
 ```
-tar -xzvf couchbase-autonomous-operator-openshift_1.2.1-linux-x86_64.tar.gz
+tar -xzvf couchbase-autonomous-operator-kubernetes_1.2.1-linux-x86_64.tar.gz
 cd couchbase-autonomous-operator-kubernetes_1.2.1-linux-x86_64/
+```
+
+### Create the dynamic admission controller
+```
+kubectl create -f admission.yaml
+```
+
+You should see the following objects getting created:
+```
+serviceaccount/couchbase-operator-admission created
+clusterrole.rbac.authorization.k8s.io/couchbase-operator-admission created
+clusterrolebinding.rbac.authorization.k8s.io/couchbase-operator-admission created
+secret/couchbase-operator-admission created
+deployment.apps/couchbase-operator-admission created
+service/couchbase-operator-admission created
+mutatingwebhookconfiguration.admissionregistration.k8s.io/couchbase-operator-admission created
+validatingwebhookconfiguration.admissionregistration.k8s.io/couchbase-operator-admission created
+```
+
+### Verify the admission controller
+```
+kubectl get pods
+NAME                                               READY   STATUS    RESTARTS   AGE
+couchbase-operator-admission-59b9bb8fc6-xz2ld      1/1     Running   0          2m20s
+```
+### Deploy the operator
+```
 kubectl create -f crd.yaml
 kubectl create -f operator-service-account.yaml
 kubectl create -f operator-role.yaml
