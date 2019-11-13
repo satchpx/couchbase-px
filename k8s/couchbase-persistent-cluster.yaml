@@ -1,7 +1,7 @@
 apiVersion: couchbase.com/v1
 kind: CouchbaseCluster
 metadata:
-  name: cb-openshift-cluster
+  name: cb-kubernetes-cluster
 spec:
   schedulerName: stork
   affinity:

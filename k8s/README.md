@@ -171,19 +171,19 @@ kubectl logs -f <couchbase-operator-pod>
 
 One the cluster is up, you should see something like this in the logs:
 ```
-time="2019-11-13T17:25:46Z" level=info cluster-name=cb-openshift-cluster module=cluster
-time="2019-11-13T17:25:54Z" level=info msg="reconcile finished" cluster-name=cb-openshift-cluster module=cluster
-time="2019-11-13T17:26:23Z" level=info msg="Cluster status: balanced" cluster-name=cb-openshift-cluster module=cluster
-time="2019-11-13T17:26:23Z" level=info msg="Node status:" cluster-name=cb-openshift-cluster module=cluster
-time="2019-11-13T17:26:23Z" level=info msg="┌───────────────────────────┬──────────────────┬────────┬────────────────┐" cluster-name=cb-openshift-cluster module=cluster
-time="2019-11-13T17:26:23Z" level=info msg="│ Server                    │ Version          │ Class  │ Status         │" cluster-name=cb-openshift-cluster module=cluster
-time="2019-11-13T17:26:23Z" level=info msg="├───────────────────────────┼──────────────────┼────────┼────────────────┤" cluster-name=cb-openshift-cluster module=cluster
-time="2019-11-13T17:26:23Z" level=info msg="│ cb-openshift-cluster-0000 │ enterprise-6.0.1 │ data   │ managed+active │" cluster-name=cb-openshift-cluster module=cluster
-time="2019-11-13T17:26:23Z" level=info msg="│ cb-openshift-cluster-0001 │ enterprise-6.0.1 │ index  │ managed+active │" cluster-name=cb-openshift-cluster module=cluster
-time="2019-11-13T17:26:23Z" level=info msg="│ cb-openshift-cluster-0002 │ enterprise-6.0.1 │ data   │ managed+active │" cluster-name=cb-openshift-cluster module=cluster
-time="2019-11-13T17:26:23Z" level=info msg="│ cb-openshift-cluster-0003 │ enterprise-6.0.1 │ data   │ managed+active │" cluster-name=cb-openshift-cluster module=cluster
-time="2019-11-13T17:26:23Z" level=info msg="│ cb-openshift-cluster-0004 │ enterprise-6.0.1 │ search │ managed+active │" cluster-name=cb-openshift-cluster module=cluster
-time="2019-11-13T17:26:23Z" level=info msg="└───────────────────────────┴──────────────────┴────────┴────────────────┘" cluster-name=cb-openshift-cluster module=cluster
+time="2019-11-13T17:25:46Z" level=info cluster-name=cb-kubernetes-cluster module=cluster
+time="2019-11-13T17:25:54Z" level=info msg="reconcile finished" cluster-name=cb-kubernetes-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="Cluster status: balanced" cluster-name=cb-kubernetes-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="Node status:" cluster-name=cb-kubernetes-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="┌───────────────────────────┬──────────────────┬────────┬────────────────┐" cluster-name=cb-kubernetes-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="│ Server                    │ Version          │ Class  │ Status         │" cluster-name=cb-kubernetes-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="├───────────────────────────┼──────────────────┼────────┼────────────────┤" cluster-name=cb-kubernetes-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="│ cb-kubernetes-cluster-0000 │ enterprise-6.0.1 │ data   │ managed+active │" cluster-name=cb-kubernetes-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="│ cb-kubernetes-cluster-0001 │ enterprise-6.0.1 │ index  │ managed+active │" cluster-name=cb-kubernetes-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="│ cb-kubernetes-cluster-0002 │ enterprise-6.0.1 │ data   │ managed+active │" cluster-name=cb-kubernetes-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="│ cb-kubernetes-cluster-0003 │ enterprise-6.0.1 │ data   │ managed+active │" cluster-name=cb-kubernetes-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="│ cb-kubernetes-cluster-0004 │ enterprise-6.0.1 │ search │ managed+active │" cluster-name=cb-kubernetes-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="└───────────────────────────┴──────────────────┴────────┴────────────────┘" cluster-name=cb-kubernetes-cluster module=cluster
 ```
 
 
@@ -191,11 +191,11 @@ time="2019-11-13T17:26:23Z" level=info msg="└───────────
 ```
 # kubectl get pods
 NAME                                               READY   STATUS    RESTARTS   AGE
-cb-openshift-cluster-0000                          1/1     Running   0          17h
-cb-openshift-cluster-0001                          1/1     Running   0          17h
-cb-openshift-cluster-0002                          1/1     Running   0          17h
-cb-openshift-cluster-0003                          1/1     Running   0          17h
-cb-openshift-cluster-0004                          1/1     Running   0          17h
+cb-kubernetes-cluster-0000                          1/1     Running   0          17h
+cb-kubernetes-cluster-0001                          1/1     Running   0          17h
+cb-kubernetes-cluster-0002                          1/1     Running   0          17h
+cb-kubernetes-cluster-0003                          1/1     Running   0          17h
+cb-kubernetes-cluster-0004                          1/1     Running   0          17h
 couchbase-operator-admission-59b9bb8fc6-xz2ld      1/1     Running   0          17h
 couchbase-operator-b9c9d4977-gz9l4                 1/1     Running   5          17h
 ```
