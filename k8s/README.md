@@ -185,3 +185,22 @@ time="2019-11-13T17:26:23Z" level=info msg="│ cb-openshift-cluster-0003 │ en
 time="2019-11-13T17:26:23Z" level=info msg="│ cb-openshift-cluster-0004 │ enterprise-6.0.1 │ search │ managed+active │" cluster-name=cb-openshift-cluster module=cluster
 time="2019-11-13T17:26:23Z" level=info msg="└───────────────────────────┴──────────────────┴────────┴────────────────┘" cluster-name=cb-openshift-cluster module=cluster
 ```
+
+
+*NOTE*: The persistent cluster configuration includes 3 data nodes, 1 search and 1 index node in the couchbase cluster.
+```
+# kubectl get pods
+NAME                                               READY   STATUS    RESTARTS   AGE
+cb-openshift-cluster-0000                          1/1     Running   0          17h
+cb-openshift-cluster-0001                          1/1     Running   0          17h
+cb-openshift-cluster-0002                          1/1     Running   0          17h
+cb-openshift-cluster-0003                          1/1     Running   0          17h
+cb-openshift-cluster-0004                          1/1     Running   0          17h
+couchbase-operator-admission-59b9bb8fc6-xz2ld      1/1     Running   0          17h
+couchbase-operator-b9c9d4977-gz9l4                 1/1     Running   5          17h
+```
+
+### Pillowfight
+```
+TBD
+```
