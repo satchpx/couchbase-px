@@ -153,6 +153,7 @@ NAME                                  READY   STATUS    RESTARTS   AGE
 couchbase-operator-577fbfdbcd-6sgz9   1/1     Running   0          66s
 ```
 
+### Install the couchbase cluster
 Create a secret containing the Auth Credentials
 ```
 kubectl create -f secret.yaml
@@ -160,7 +161,27 @@ kubectl create -f secret.yaml
 
 Now we can deploy the couchbase persistent cluster
 ```
+kubectl create -f https://raw.githubusercontent.com/satchpx/couchbase-px/master/k8s/couchbase-persistent-cluster.yaml
 ```
 
+*NOTE*: The couchbase cluster may take a while to start. To follow progress check the operator logs:
+```
+kubectl logs -f <couchbase-operator-pod>
+```
 
-### Install the couchbase operator
+One the cluster is up, you should see something like this in the logs:
+```
+time="2019-11-13T17:25:46Z" level=info cluster-name=cb-openshift-cluster module=cluster
+time="2019-11-13T17:25:54Z" level=info msg="reconcile finished" cluster-name=cb-openshift-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="Cluster status: balanced" cluster-name=cb-openshift-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="Node status:" cluster-name=cb-openshift-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="┌───────────────────────────┬──────────────────┬────────┬────────────────┐" cluster-name=cb-openshift-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="│ Server                    │ Version          │ Class  │ Status         │" cluster-name=cb-openshift-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="├───────────────────────────┼──────────────────┼────────┼────────────────┤" cluster-name=cb-openshift-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="│ cb-openshift-cluster-0000 │ enterprise-6.0.1 │ data   │ managed+active │" cluster-name=cb-openshift-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="│ cb-openshift-cluster-0001 │ enterprise-6.0.1 │ index  │ managed+active │" cluster-name=cb-openshift-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="│ cb-openshift-cluster-0002 │ enterprise-6.0.1 │ data   │ managed+active │" cluster-name=cb-openshift-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="│ cb-openshift-cluster-0003 │ enterprise-6.0.1 │ data   │ managed+active │" cluster-name=cb-openshift-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="│ cb-openshift-cluster-0004 │ enterprise-6.0.1 │ search │ managed+active │" cluster-name=cb-openshift-cluster module=cluster
+time="2019-11-13T17:26:23Z" level=info msg="└───────────────────────────┴──────────────────┴────────┴────────────────┘" cluster-name=cb-openshift-cluster module=cluster
+```
