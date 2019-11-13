@@ -161,7 +161,7 @@ oc create -f secret.yaml
 
 Now we can deploy the couchbase persistent cluster
 ```
-oc create -f https://raw.githubusercontent.com/satchpx/couchbase-px/master/k8s/couchbase-persistent-cluster.yaml
+oc create -f https://raw.githubusercontent.com/satchpx/couchbase-px/master/openshift/couchbase-persistent-cluster.yaml
 ```
 
 *NOTE*: The couchbase cluster may take a while to start. To follow progress check the operator logs:
