@@ -101,6 +101,8 @@ parameters:
      portworx/cloud-cred-id: k8s/kube-system/pwx-s3-backuplocation
 ```
 
+### (Optional) To create encrypted PVCs
+
 ## Install Couchbase using the operator
 
 ### Download the operator
