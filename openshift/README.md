@@ -101,6 +101,103 @@ parameters:
      portworx/cloud-cred-id: k8s/kube-system/pwx-s3-backuplocation
 ```
 
+### (Optional) To create encrypted PVCs
+Portworx supports encrypting the volumes. In order to encrypt, Portworx uses the libgcrypt library to interface with the dm-crypt module for creating, accessing and managing encrypted devices. Portworx uses the LUKS format of dm-crypt and AES-256 as the cipher with xts-plain64 as the cipher mode.
+
+All encrypted volumes are protected by a passphrase. Portworx uses this passphrase to encrypt the volume data at rest as well as in transit. It is recommended to store these passphrases in a secure secret store. More information [here](https://docs.portworx.com/portworx-install-with-kubernetes/storage-operations/create-pvcs/create-encrypted-pvcs/#volume-encryption)
+
+This guide shall use Kubernetes as the secret store, i.e. the passphrase shall be stored in a kubernetes secret in `portworx` namespace. 
+
+#### Create permissions to access secret(s)
+```
+cat <<EOF | oc apply -f -
+# Namespace to store credentials
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: portworx
+---
+# Role to access secrets under portworx namespace only
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: px-role
+  namespace: portworx
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "create", "update", "patch"]
+---
+# Allow portworx service account to access the secrets under the portworx namespace
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: px-role-binding
+  namespace: portworx
+subjects:
+- kind: ServiceAccount
+  name: px-account
+  namespace: kube-system
+roleRef:
+  kind: Role
+  name: px-role
+  apiGroup: rbac.authorization.k8s.io
+EOF
+```
+
+*NOTE*: Make sure that `"-secret_type"`, `"k8s"` arguments are present in `portworx` container arguments in the daemonset. If not add it. It should look like this:
+```
+containers:
+  - args:
+    - -c
+    - testclusterid
+    - -s
+    - /dev/sdb
+    - -x
+    - kubernetes
+    - -secret_type
+    - k8s
+    name: portworx
+```
+
+#### Set the cluster wide secret key
+A cluster wide secret key is a common encryption key/ passphrase that shall be used to encrypt all PVCs. Portworx also supports having an individual encryption key/passphrase per PVC. Refer to [this doc](https://docs.portworx.com/portworx-install-with-kubernetes/storage-operations/create-pvcs/create-encrypted-pvcs/#volume-encryption) for more details. For this guide, we shall use cluster-wide secret key.
+
+Create a kubernetes secret to store the encryption key/ passphrase:
+```
+oc -n portworx create secret generic px-vol-encryption \
+  --from-literal=cluster-wide-secret-key=<value>
+```
+
+Set the cluster wide secret key in Portworx:
+```
+PX_POD=$(oc get pods -l name=portworx -n kube-system -o jsonpath='{.items[0].metadata.name}')
+oc exec $PX_POD -n kube-system -- /opt/pwx/bin/pxctl secrets set-cluster-key \
+  --secret cluster-wide-secret-key
+```
+
+#### Enable encryption in the storageClass
+Configure the storageClass to turn ON encryption by adding `secure: true` in the storageClass parameter. So, the storageClass from the section above shall now look like this:
+```
+kind: StorageClass
+apiVersion: storage.k8s.io/v1beta1
+metadata:
+ name: px-db-rf2-secure-sc
+provisioner: kubernetes.io/portworx-volume
+allowVolumeExpansion: true
+parameters:
+ repl: "2"
+ priority_io: "high"
+ io_profile: "db"
+ secure: "true"
+ disable_io_profile_protection: "1"
+ snapshotschedule.stork.libopenstorage.org/interval-schedule: |
+   schedulePolicyName: cbc-policy
+   annotations:
+     portworx/snapshot-type: cloud
+     portworx/cloud-cred-id: k8s/kube-system/pwx-s3-backuplocation
+```
+
 ## Install Couchbase using the operator
 
 ### Download the operator
