@@ -71,9 +71,6 @@ location:
     disableSSL: true
 ```
 
-### Create a VolumePlacementStrategy
-@TODO
-
 ### Install the required storageClasses
 Create a storageClass that incorporates the two objects defined above. This will ensure that all PVC's created from this storageClass will be backed up per the defined schedule to the defined location.
 
@@ -300,4 +297,9 @@ couchbase-operator-b9c9d4977-gz9l4                 1/1     Running   5          
 ### Pillowfight
 ```
 TBD
+```
+
+### Using stork-scheduler
+```
+@TODO
 ```
